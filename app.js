@@ -1,5 +1,5 @@
 var express                 = require("express");
-var app = express();
+var app                     = express();
 var mongoose                = require("mongoose");
 mongoose.Promise            = require("bluebird");//--using bluebird promises installed instead of native ES6 for 4X speed
 var passport                = require("passport");
@@ -51,11 +51,13 @@ app.get("/register", function(req,res){
 app.post("/register", function(req,res){
   req.body.username
   req.body.password
+  //creating a new user and saving to database
   User.register(new User({username: req.body.username}), req.body.password, function(err, user){
     if(err){
       console.log(err);
       return res.render("register");
     }
+    //passport.authenticate will check for the user we just created and if it exists in the db it will then auth
     passport.authenticate("local")(req, res, function(){  //this logs the user in
       res.redirect("/secret");
     });
